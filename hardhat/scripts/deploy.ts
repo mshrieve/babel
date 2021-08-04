@@ -2,12 +2,25 @@ import { ethers } from 'hardhat'
 
 async function main() {
   // We get the contract to deploy
-  const Words = await ethers.getContractFactory('Words')
-  const wordsContract = await Words.deploy()
+  const GeneratorFactory = await ethers.getContractFactory('Generator')
+  const Generator = await GeneratorFactory.deploy()
+  const GeneratorInterface = GeneratorFactory.interface
+  await Generator.deployed()
 
-  await wordsContract.deployed()
-  console.log('Words deployed by: ', await wordsContract.signer.getAddress())
-  console.log('Words deployed to: ', wordsContract.address)
+  const MockWordsFactory = await ethers.getContractFactory('MockWords')
+  const Words = await MockWordsFactory.deploy(Generator.address)
+  const WordsInterface = MockWordsFactory.interface
+  await Words.deployed()
+
+  console.log(WordsInterface)
+  const transaction = await Words.requestNewRandomWord()
+  const receipt = await transaction.wait()
+  const iface = new ethers.utils.Interface([
+    ...WordsInterface.fragments,
+    ...GeneratorInterface.fragments
+  ])
+  //   console.log(receipt.logs)
+  console.log(receipt.logs.map((log: any) => iface.parseLog(log)))
 }
 
 main()
