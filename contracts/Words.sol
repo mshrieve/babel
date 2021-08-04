@@ -6,12 +6,14 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@chainlink/contracts/src/v0.8/VRFConsumerBase.sol';
 import './Libraries/ByteArray.sol';
 import './Generator.sol';
-import './Interfaces/IRandom.sol';
+import 'hardhat/console.sol';
 import './Interfaces/IWords.sol';
+import './Interfaces/IBytes32Requester.sol';
+import './Interfaces/IBytes32Source.sol';
 
-contract MockWords is IWords, ERC721 {
+contract Words is IBytes32Requester, IWords, ERC721 {
     Generator immutable generator;
-    IRandom immutable random;
+    IBytes32Source immutable random;
 
     mapping(bytes32 => address) internal requestToSender;
     mapping(bytes32 => bytes32) public wordToRequest;
@@ -19,16 +21,17 @@ contract MockWords is IWords, ERC721 {
     constructor(address _generator, address _random)
         ERC721('Babel Words', 'BWRD')
     {
-        random = IRandom(_random);
+        random = IBytes32Source(_random);
         generator = Generator(_generator);
     }
 
-    function requestNewRandomWord()
+    function requestNewRandomWord(address _to)
         external
         override
         returns (bytes32 requestId)
     {
-        return random.requestRandomBytes32();
+        requestId = random.requestRandomBytes32(address(this));
+        requestToSender[requestId] = _to;
     }
 
     function fulfillRandomBytes32(bytes32 _requestId, bytes32 _randomBytes32)

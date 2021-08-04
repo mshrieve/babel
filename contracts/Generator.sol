@@ -13,7 +13,7 @@ contract Generator {
     mapping(address => bytes32) public words;
     uint256 public wordsAvailable = 26**5;
 
-    event WordGenerated(address indexed _owner, bytes32 indexed _word);
+    // event WordGenerated(address indexed _owner, bytes32 indexed _word);
     // event CollisionDetected(
     //     address indexed _owner,
     //     bytes32 indexed _word,
@@ -30,7 +30,6 @@ contract Generator {
         }
         wordUnavailable[word] = true;
         allocated++;
-        emit WordGenerated(msg.sender, word);
         return (true, word);
     }
 

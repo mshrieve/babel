@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity ^0.8.0;
-import './Libraries/ByteArray.sol';
+import '../Libraries/ByteArrayAssembly.sol';
 
-contract ByteArrayHarness {
-    using ByteArray for bytes32;
+contract ByteArrayAssemblyHarness {
+    using ByteArrayAssembly for bytes32;
 
     function getIndex(bytes32 _byteArray, uint8 _index)
         public
@@ -18,7 +18,7 @@ contract ByteArrayHarness {
         bytes32 _byteArray,
         uint8 _index,
         uint8 _value
-    ) public view returns (bytes32) {
+    ) public pure returns (bytes32) {
         return _byteArray.setIndex(_index, _value);
     }
 
@@ -30,7 +30,7 @@ contract ByteArrayHarness {
         return byteArray.slice(index);
     }
 
-    function convertRandomToWord(bytes32 random) public view returns (bytes32) {
+    function convertRandomToWord(bytes32 random) public pure returns (bytes32) {
         return random.convertRandomToWord();
     }
 }

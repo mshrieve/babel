@@ -74,7 +74,7 @@ library ByteArray {
 
     function convertRandomToWord(bytes32 _random)
         internal
-        view
+        pure
         returns (bytes32 result)
     {
         for (uint8 i; i < 5; i++) {
@@ -83,7 +83,6 @@ library ByteArray {
             result = result | (bytes32(bytes1(letter)) >> (8 * i));
         }
         result = result >> 216;
-        console.logBytes32(result);
         // assembly {
         //     let result_ := mload(0x40)
         //     mstore(0x40, add(result_, 0x20))
