@@ -68,6 +68,8 @@ const randomToEncodedWord = (random: string) => {
   )
 }
 
+const randomWord = () => randomToEncodedWord(generateRandomBytes32())
+
 export {
   hexToChar,
   charToHex,
@@ -76,5 +78,6 @@ export {
   setStringIndex,
   decodeWord,
   generateRandomBytes32,
-  randomToEncodedWord
+  randomToEncodedWord,
+  randomWord
 }

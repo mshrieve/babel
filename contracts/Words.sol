@@ -38,7 +38,7 @@ contract Words is IBytes32Requester, IWords, ERC721 {
         external
         override
     {
-        (, bytes32 word) = generator.generateWord(_randomBytes32);
+        bytes32 word = generator.generateWord(_randomBytes32);
         wordToRequest[word] = _requestId;
         _safeMint(requestToSender[_requestId], uint256(word));
     }

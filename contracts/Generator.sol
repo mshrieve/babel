@@ -13,32 +13,21 @@ contract Generator {
     mapping(address => bytes32) public words;
     uint256 public wordsAvailable = 26**5;
 
-    // event WordGenerated(address indexed _owner, bytes32 indexed _word);
-    // event CollisionDetected(
-    //     address indexed _owner,
-    //     bytes32 indexed _word,
-    //     uint8 _level
-    // );
-
     uint256 public allocated;
 
-    function generateWord(bytes32 random) public returns (bool, bytes32) {
+    function generateWord(bytes32 random) public returns (bytes32) {
         bytes32 word = ByteArray.convertRandomToWord(random);
-
+        require(wordsAvailable > 0);
         if (isWordAvailable(word)) {
             word = findLetter(word, 4);
         }
         wordUnavailable[word] = true;
         allocated++;
-        return (true, word);
+        return word;
     }
 
-    function isWordAvailable(bytes32 word) internal view returns (bool result) {
-        result = !wordUnavailable[word];
-        // if (!result) {
-        //     collisions++;
-        //     emit CollisionDetected(msg.sender, word, level);
-        // }
+    function isWordAvailable(bytes32 word) internal view returns (bool) {
+        return !wordUnavailable[word];
     }
 
     function findFinalLetter(bytes32 word) internal returns (bytes32) {
@@ -60,9 +49,9 @@ contract Generator {
     }
 
     function findLetter(bytes32 word, uint8 index) internal returns (bytes32) {
-        assert(index >= 0 && index < 5);
+        assert(index > 0 && index < 5);
         if (isWordAvailable(word)) return word;
-        // prefix does NOT include the index
+        // prefix does not include the index
         bytes32 prefix = ByteArray.slice(word, index);
         if (lettersUnavailableAfterPrefix[prefix] < 26) {
             if (index == 4) {
@@ -86,11 +75,5 @@ contract Generator {
         }
         // there are no words with this prefix, we need to move back
         return findLetter(word, index - 1);
-
-        // then we start looking for a free next letter.
-    }
-
-    function getZero() public pure returns (uint256) {
-        return 0;
     }
 }
