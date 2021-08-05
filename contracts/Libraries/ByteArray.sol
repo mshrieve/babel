@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity ^0.8.0;
-import 'hardhat/console.sol';
 
 library ByteArray {
     uint8 constant asciia = 97;
@@ -34,32 +33,27 @@ library ByteArray {
         bytes32 _byteArray,
         uint8 _index,
         uint8 _value
-    ) internal view returns (bytes32 result) {
-        // assembly {
-        //     let result_ := mload(0x40)
-        //     mstore(0x40, add(result_, 0x20))
-        //     mstore(result_, _byteArray)
-        //     mstore8(add(result_, add(offset, _index)), _value)
-        //     result := mload(result_)
-        // }
-        // bytes32 shift = bytes32(bytes1(_value)) >> 4;
-        bytes32 newValue = bytes32(bytes1(_value)) >> (216 + 8 * _index);
-        bytes32 oldValue = bytes32(_byteArray[offset + _index]) >>
-            (216 + 8 * _index);
+    ) internal pure returns (bytes32 result) {
+        assembly {
+            let result_ := mload(0x40)
+            mstore(0x40, add(result_, 0x20))
+            mstore(result_, _byteArray)
+            mstore8(add(result_, add(offset, _index)), _value)
+            result := mload(result_)
+        }
 
-        console.logBytes32(newValue);
-        console.logBytes32(oldValue);
-        console.logBytes32(_byteArray);
-        console.logBytes32(~oldValue);
-        console.logBytes32(_byteArray & ~oldValue);
-        result =
-            // [a, b, c] =>
-            //     [0, _v, 0] | ([a, b, c] & ~[0, b, 0])
-            //   = [0, _v, 0] | ([a, b, c] & [1, ~b, 1])
-            //   = [0, _v, 0] | [a, 0, c]
-            //   = [a, _v, c]
-            newValue |
-            (_byteArray & ~oldValue);
+        // bytes32 newValue = bytes32(bytes1(_value)) >> (216 + 8 * _index);
+        // bytes32 oldValue = bytes32(_byteArray[offset + _index]) >>
+        //     (216 + 8 * _index);
+
+        // result =
+        //     // [a, b, c] =>
+        //     //     [0, _v, 0] | ([a, b, c] & ~[0, b, 0])
+        //     //   = [0, _v, 0] | ([a, b, c] & [1, ~b, 1])
+        //     //   = [0, _v, 0] | [a, 0, c]
+        //     //   = [a, _v, c]
+        //     newValue |
+        //     (_byteArray & ~oldValue);
     }
 
     // get [0, ..., index-1] from [0, ..., length - 1]

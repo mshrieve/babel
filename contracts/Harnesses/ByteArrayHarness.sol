@@ -18,7 +18,7 @@ contract ByteArrayHarness {
         bytes32 _byteArray,
         uint8 _index,
         uint8 _value
-    ) public view returns (bytes32) {
+    ) public pure returns (bytes32) {
         return _byteArray.setIndex(_index, _value);
     }
 

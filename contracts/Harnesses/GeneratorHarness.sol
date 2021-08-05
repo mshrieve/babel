@@ -6,28 +6,32 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '../Generator.sol';
 
 contract GeneratorHarness is Generator {
-    event WordGenerated(bytes32 indexed word);
+    event Word(bytes32 indexed word);
 
     constructor() Generator() {}
 
     function _generateWord(bytes32 random) external returns (bytes32 word) {
         word = generateWord(random);
-        emit WordGenerated(word);
+        emit Word(word);
     }
 
-    function _isWordAvailable(bytes32 word)
+    function _isWordAvailable(bytes32 _word)
         external
         view
         returns (bool result)
     {
-        return isWordAvailable(word);
+        return isWordAvailable(_word);
     }
 
-    function _findFinalLetter(bytes32 word) external returns (bytes32) {
-        return findFinalLetter(word);
+    function _findFinalLetter(bytes32 _word) external returns (bytes32 word) {
+        word = findFinalLetter(_word);
+        emit Word(word);
     }
 
-    function _findLetter(bytes32 word, uint8 index) external returns (bytes32) {
-        return findLetter(word, index);
+    function _findLetter(bytes32 _word, uint8 _index)
+        external
+        returns (bytes32)
+    {
+        return findLetter(_word, _index);
     }
 }

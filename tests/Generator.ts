@@ -55,4 +55,22 @@ describe('Generator', function () {
     //   console.log(receipt.logs)
     // const args = GeneratorInterface.parseLog(receipt.logs[0]).args
   })
+
+  it('should find final letter', async function () {
+    let word = randomWord()
+    for (let i = 0; i < 26; i++) {
+      let transaction = await Generator._findFinalLetter(word)
+      let receipt = await transaction.wait()
+
+      // console.log(receipt)
+      const newWord = GeneratorInterface.parseLog(receipt.logs[0]).args.word
+      expect((parseInt(word, 16) + 15) % 26).to.equal(
+        parseInt(newWord, 16) % 26
+      )
+      word = newWord
+      // const args = GeneratorInterface.parseLog(receipt.logs[0]).args
+    }
+    // should revert on the 27th try
+    await expect(Generator._findFinalLetter(word)).to.be.reverted
+  })
 })
