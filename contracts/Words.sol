@@ -7,6 +7,7 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@chainlink/contracts/src/v0.8/VRFConsumerBase.sol';
 import './Libraries/ByteArray.sol';
 import './Generator.sol';
+import './Token.sol';
 import 'hardhat/console.sol';
 import './Interfaces/IWords.sol';
 import './Interfaces/IBytes32Requester.sol';
@@ -15,18 +16,24 @@ import './Interfaces/IBytes32Source.sol';
 contract Words is IBytes32Requester, IWords, ERC721, Ownable {
     Generator immutable generator;
     IBytes32Source immutable bytes32Source;
+    Token immutable babel;
 
     mapping(bytes32 => address) internal requestToSender;
     mapping(bytes32 => bytes32) public wordToRequest;
 
     event WordRequest(address to);
 
-    constructor(address _generator, address _random)
-        ERC721('Babel Words', 'BWRD')
-        Ownable()
-    {
+    uint256 blockSupply;
+    uint256 blockSupplyLastReset;
+
+    constructor(
+        address _generator,
+        address _random,
+        address _babel
+    ) ERC721('Babel Words', 'BWRD') Ownable() {
         bytes32Source = IBytes32Source(_random);
         generator = Generator(_generator);
+        babel = Token(_babel);
     }
 
     function requestWord(address _to)
@@ -35,10 +42,19 @@ contract Words is IBytes32Requester, IWords, ERC721, Ownable {
         onlyOwner
         returns (bytes32 requestId)
     {
+        // transfer 1 babel coin
+        babel.transferFrom(msg.sender, address(this), 1);
         requestId = bytes32Source.requestRandomBytes32(address(this));
         requestToSender[requestId] = _to;
         emit WordRequest(_to);
     }
+
+    // function getPrice(uint256 quantity) returns uint256 {
+    //     if (blockSupplyLastReset != block.number) {
+    //         blockSupply = 0;
+    //         blockSupplyLast reset = block.number;
+    //     }
+    // }
 
     function fulfillRequest(bytes32 _requestId, bytes32 _randomBytes32)
         external

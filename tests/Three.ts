@@ -5,6 +5,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { Interface } from 'ethers/lib/utils'
 
 describe('Words', function () {
+  let Three: Contract
   let Words: Contract
   let Bytes32Source: Contract
   let owner: SignerWithAddress
@@ -13,6 +14,11 @@ describe('Words', function () {
   before(async () => {
     const signers = await ethers.getSigners()
     owner = signers[0]
+
+    const ThreeFactory = await ethers.getContractFactory('Three')
+    const Three = await ThreeFactory.deploy()
+    const ThreeInterface = ThreeFactory.interface
+    await Three.deployed()
 
     const GeneratorFactory = await ethers.getContractFactory('GeneratorHarness')
     const Generator = await GeneratorFactory.deploy()

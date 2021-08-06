@@ -14,4 +14,7 @@ contract Token is ERC20, Ownable {
     function mint(address account, uint256 amount) public virtual onlyOwner {
         _mint(account, amount);
     }
+
+    // can receive words directly
+    function onERC721Received() public {}
 }

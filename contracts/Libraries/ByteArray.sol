@@ -41,7 +41,7 @@ library ByteArray {
             mstore8(add(result_, add(offset, _index)), _value)
             result := mload(result_)
         }
-
+        // non-assembly method:
         // bytes32 newValue = bytes32(bytes1(_value)) >> (216 + 8 * _index);
         // bytes32 oldValue = bytes32(_byteArray[offset + _index]) >>
         //     (216 + 8 * _index);
@@ -71,27 +71,34 @@ library ByteArray {
         pure
         returns (bytes32 result)
     {
-        for (uint8 i; i < 5; i++) {
-            uint8 letter = (uint8(_random[offset + i]) % alphabetLength) +
-                asciia;
-            result = result | (bytes32(bytes1(letter)) >> (8 * i));
-        }
-        result = result >> 216;
-        // assembly {
-        //     let result_ := mload(0x40)
-        //     mstore(0x40, add(result_, 0x20))
-        //     for {
-        //         let i := offset
-        //     } lt(i, 0x20) {
-        //         i := add(i, 1)
-        //     } {
-        //         mstore8(
-        //             add(result_, i),
-        //             add(mod(byte(i, _random), alphabetLength), asciia)
-        //         )
-        //     }
-
-        //     result := mload(result_)
+        // non-assembly method:
+        // for (uint8 i; i < 5; i++) {
+        //     uint8 letter = (uint8(_random[offset + i]) % alphabetLength) +
+        //         asciia;
+        //     result = result | (bytes32(bytes1(letter)) >> (8 * i));
         // }
+        // result = result >> 216;
+        assembly {
+            // mload free pointer
+            let result_ := mload(0x40)
+            // increment free pointer
+            mstore(0x40, add(result_, 0x20))
+            // for i from the offset to the end of the bytes32
+            for {
+                let i := offset
+            } lt(i, 0x20) {
+                i := add(i, 1)
+            } {
+                mstore8(
+                    // write at position result_ + i
+                    add(result_, i),
+                    // take the i-th byte of _random modulo the alphabetLength,
+                    // add to asciia
+                    add(mod(byte(i, _random), alphabetLength), asciia)
+                )
+            }
+            // load and return the result
+            result := mload(result_)
+        }
     }
 }

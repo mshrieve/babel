@@ -1,3 +1,5 @@
+import { ethers } from 'ethers'
+
 const hexToChar = (hex: string) => {
   return String.fromCharCode(Number.parseInt(hex, 16))
 }
@@ -18,6 +20,19 @@ const encodeWord = (word: string) => {
   return encodedWord
 }
 
+const encodeTriplet = (words: string[]) => {
+  console.log(words)
+  let encodedWord = '0x' + '0'.repeat(28)
+
+  for (const word of words) {
+    encodedWord += '00'
+    for (let i = 0; i < 5; i++) {
+      encodedWord = encodedWord + word.charCodeAt(i).toString(16)
+    }
+  }
+  return encodedWord
+}
+
 const setStringIndex = (word: string, index: number, char: string) =>
   word.slice(0, index) + char + word.slice(index + 1, 5)
 
@@ -32,19 +47,20 @@ const decodeWord = (code: string) => {
 }
 
 const generateRandomBytes32 = () => {
-  const bytes = new Array(32)
+  return '0x' + ethers.utils.randomBytes(32).join('')
+  // const bytes = new Array(32)
 
-  return (
-    '0x' +
-    bytes
-      .fill(undefined)
-      .map((_) =>
-        Math.floor(Math.random() * 256)
-          .toString(16)
-          .padStart(2, '0')
-      )
-      .join('')
-  )
+  // return (
+  //   '0x' +
+  //   bytes
+  //     .fill(undefined)
+  //     .map((_) =>
+  //       Math.floor(Math.random() * 256)
+  //         .toString(16)
+  //         .padStart(2, '0')
+  //     )
+  //     .join('')
+  // )
 }
 
 const randomToEncodedWord = (random: string) => {
@@ -79,5 +95,6 @@ export {
   decodeWord,
   generateRandomBytes32,
   randomToEncodedWord,
-  randomWord
+  randomWord,
+  encodeTriplet
 }
