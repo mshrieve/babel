@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import '../Interfaces/IBytes32Requester.sol';
 import '../Interfaces/IBytes32Source.sol';
 
-contract MockRandomBytes32 is IBytes32Source {
+contract MockRandom is IBytes32Source {
     uint256 private salt;
     mapping(bytes32 => address) public requestIdToCallback;
     event Bytes32Requested(bytes32 indexed requestId, address indexed callback);
@@ -27,9 +27,9 @@ contract MockRandomBytes32 is IBytes32Source {
     }
 
     function fulfillRandomBytes32(bytes32 _requestId) external {
-        IBytes32Requester(requestIdToCallback[_requestId]).fulfillRandomBytes32(
-                _requestId,
-                randomize()
-            );
+        IBytes32Requester(requestIdToCallback[_requestId]).fulfillRequest(
+            _requestId,
+            randomize()
+        );
     }
 }

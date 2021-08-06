@@ -29,7 +29,7 @@ contract Random is IBytes32Source, VRFConsumerBase {
     }
 
     function requestRandomBytes32(address callback)
-        public
+        external
         override
         returns (bytes32 requestId)
     {
@@ -45,7 +45,7 @@ contract Random is IBytes32Source, VRFConsumerBase {
         internal
         override
     {
-        IBytes32Requester(requestIdToCallback[requestId]).fulfillRandomBytes32(
+        IBytes32Requester(requestIdToCallback[requestId]).fulfillRequest(
             requestId,
             bytes32(randomness)
         );
