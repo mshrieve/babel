@@ -21,4 +21,5 @@ h2 {
 button,
 input {
   margin: 0.25rem;
+  width: 100%;
 }

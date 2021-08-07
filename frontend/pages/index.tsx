@@ -1,17 +1,18 @@
-import { ChartProvider } from '../context/chart'
-import { Chart } from '../components/Chart'
+import { Wallet } from '../components/Wallet'
+import { Words } from '../components/Words'
+import { MyWords } from '../components/MyWords'
+import { Random } from '../components/Random'
 import { EthProvider } from '../context/eth'
-import { RoundContainer } from '../components/RoundContainer'
 
-const Round = () => {
+const Main = () => {
   return (
-    <ChartProvider>
-      <EthProvider>
-        <Chart />
-        <RoundContainer />
-      </EthProvider>
-    </ChartProvider>
+    <EthProvider>
+      <Wallet />
+      <Words />
+      <MyWords />
+      <Random />
+    </EthProvider>
   )
 }
 
-export default Round
+export default Main
