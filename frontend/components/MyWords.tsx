@@ -1,5 +1,5 @@
-import { useWords, decodeTokenId } from '../hooks/useWords'
-
+import { useWords } from '../hooks/useWords'
+import { decodeTokenId } from '../util'
 const MyWords = () => {
   const { requestId, requestWord, word, tokenId, usersWords } = useWords()
   return (

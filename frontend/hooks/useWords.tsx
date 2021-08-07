@@ -60,8 +60,6 @@ export const useWords = () => {
 
     const filter = wordsContract.filters.Transfer(null, address)
     const listener = (from, to, tokenId) => {
-      console.log(tokenId)
-      console.log(decodeTokenId(tokenId))
       setWord(decodeTokenId(tokenId.toHexString()))
       setTokenId(tokenId.toHexString())
       return undefined
@@ -77,7 +75,9 @@ export const useWords = () => {
   useEffect(() => {
     if (!address) return undefined
 
-    const filter = wordsContract.filters.Transfer(null, address)
+    const filterA = wordsContract.filters.Transfer(null, address)
+    const filterB = wordsContract.filters.Transfer(address, null)
+
     const listener = async (from, to, tokenId) => {
       const balance = await wordsContract.balanceOf(address)
       let usersWords: string[] = []
@@ -88,14 +88,17 @@ export const useWords = () => {
       console.log(usersWords)
       setUsersWords(usersWords)
     }
-
-    wordsContract.on(filter, listener)
+    listener(null, null, null)
+    wordsContract.on(filterA, listener)
+    wordsContract.on(filterB, listener)
     return () => {
-      wordsContract.off(filter, listener)
+      wordsContract.off(filterA, listener)
+      wordsContract.off(filterB, listener)
     }
   }, [address])
 
   return {
+    wordsContract,
     requestWord,
     requestId,
     word,

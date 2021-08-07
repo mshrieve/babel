@@ -2,8 +2,10 @@ import { useContext, useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
 import { EthContext } from '../context/eth'
 import { useWallet } from '../hooks/useWallet'
-import Babel from '../../artifacts/contracts/Token.sol/Token.json'
+import { BigNumber } from 'bignumber.js'
+import Babel from '../../artifacts/contracts/Babel.sol/Babel.json'
 
+const eDecimals = new BigNumber(10).exponentiatedBy(18)
 export const useBabel = () => {
   const { provider } = useContext(EthContext)
   const { address } = useWallet()
@@ -19,7 +21,7 @@ export const useBabel = () => {
 
   //   mint 1000 tokens to signer
   const mintBabel = useCallback(() => {
-    if (address) babelContract.mint(address, 1000)
+    if (address) babelContract.mint(address, eDecimals.times(1000).toFixed())
   }, [address])
 
   //   increase allowance by 1000
@@ -27,7 +29,7 @@ export const useBabel = () => {
     if (address)
       babelContract.increaseAllowance(
         process.env.NEXT_PUBLIC_WORDS_ADDRESS,
-        1000
+        eDecimals.times(1000).toFixed()
       )
   }, [address])
 
