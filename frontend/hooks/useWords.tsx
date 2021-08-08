@@ -38,7 +38,7 @@ export const useWords = () => {
 
   const requestWord = useCallback(() => {
     if (!address) return undefined
-    wordsContract.requestWord(address)
+    wordsContract.requestWord()
   }, [address])
 
   //   listen for request

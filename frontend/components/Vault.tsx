@@ -3,13 +3,8 @@ import { useVault } from '../hooks/useVault'
 import { decodeTokenId } from '../util'
 
 const Vault = () => {
-  const {
-    vaultWords,
-    depositWord,
-    unclaimedWords,
-    redeemBabel,
-    whitelistVault
-  } = useVault()
+  const { vaultWords, depositWord, unclaimedWords, redeemBabel, redeemWord } =
+    useVault()
   const [inputs, setInputs] = useState({
     tokenId: ''
   })
@@ -23,8 +18,9 @@ const Vault = () => {
     <section className="border">
       <h2>vault</h2>
       <button onClick={() => depositWord(inputs.tokenId)}>deposit word</button>
+      <button onClick={() => redeemWord(inputs.tokenId)}>redeem word</button>
       <button onClick={() => redeemBabel()}>redeem babel</button>
-      <button onClick={() => whitelistVault()}>whitelist vault</button>
+
       <input
         value={inputs.tokenId}
         onChange={handleChange}

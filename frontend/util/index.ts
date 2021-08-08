@@ -20,3 +20,19 @@ export const decodeTokenId = (code: string) => {
   }
   return word
 }
+
+export const decodeTriplet = (encoded: string) => {
+  let word = ''
+  // bc of the 0x at beginning
+  // words are at 16—20, 22—26, and 28—32
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 5; j++) {
+      const offset = 2 * (16 + 6 * i + j)
+      const code = encoded[offset] + encoded[offset + 1]
+      if (code == '00') word += ' '
+      else word = word + hexToChar(code)
+    }
+    if (i < 2) word += ' '
+  }
+  return word
+}

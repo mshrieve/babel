@@ -49,10 +49,14 @@ export const useVault = () => {
     [address]
   )
 
-  const whitelistVault = useCallback(() => {
-    if (!address) return undefined
-    babelContract.whitelistAddress(vaultContract.address)
-  }, [address])
+  const redeemWord = useCallback(
+    (tokenId) => {
+      if (!address) return undefined
+      //   have to call like this since safeTransferFrom is overloaded
+      vaultContract.redeemWord(new BigNumber(tokenId).toString())
+    },
+    [address]
+  )
 
   const redeemBabel = useCallback(() => {
     if (!address) return undefined
@@ -63,7 +67,8 @@ export const useVault = () => {
   useEffect(() => {
     if (!address) return undefined
 
-    const filter = wordsContract.filters.Transfer(null, vaultContract.address)
+    const filterA = wordsContract.filters.Transfer(null, vaultContract.address)
+    const filterB = wordsContract.filters.Transfer(vaultContract.address, null)
     const listener = async () => {
       const balance = await wordsContract.balanceOf(vaultContract.address)
       let vaultWords: string[] = []
@@ -78,9 +83,11 @@ export const useVault = () => {
       setVaultWords(vaultWords)
     }
     listener()
-    wordsContract.on(filter, listener)
+    wordsContract.on(filterA, listener)
+    wordsContract.on(filterB, listener)
     return () => {
-      wordsContract.off(filter, listener)
+      wordsContract.off(filterA, listener)
+      wordsContract.off(filterB, listener)
     }
   }, [address])
 
@@ -90,7 +97,6 @@ export const useVault = () => {
     const filterA = wordsContract.filters.Transfer(null, vaultContract.address)
     const filterB = vaultContract.filters.RedeemBabel(address)
     const listener = async () => {
-      console.log('hmm')
       const unclaimedWords = await vaultContract.unclaimedWords(address)
       setUnclaimedWords(unclaimedWords.toString())
     }
@@ -108,6 +114,6 @@ export const useVault = () => {
     depositWord,
     unclaimedWords,
     redeemBabel,
-    whitelistVault
+    redeemWord
   }
 }

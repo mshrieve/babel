@@ -14,4 +14,12 @@ contract ThreeLibHarness {
     ) external pure returns (bytes32) {
         return _state.writeWord(_word, _position);
     }
+
+    function checkForMatch(bytes32 _state, bytes32 _word)
+        external
+        pure
+        returns (bool)
+    {
+        return _state.checkForMatch(_word);
+    }
 }

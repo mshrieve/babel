@@ -13,11 +13,11 @@ const charToNumber = (char: string) => {
 }
 
 const encodeWord = (word: string) => {
-  let encodedWord = '0x' + '0'.repeat(54)
+  let encodedWord = ''
   for (let i = 0; i < 5; i++) {
     encodedWord = encodedWord + word.charCodeAt(i).toString(16)
   }
-  return encodedWord
+  return ethers.utils.hexZeroPad('0x' + encodedWord, 32)
 }
 
 const encodeTriplet = (words: string[]) => {
@@ -40,8 +40,23 @@ const decodeWord = (code: string) => {
   let word = ''
   // from 28 to 32, bc of the 0x at beginning
   for (let j = 28; j < 33; j++) {
-    if (code[2 * j + 1] != '0')
-      word = word + hexToChar(code[2 * j] + code[2 * j + 1])
+    word = word + hexToChar(code[2 * j] + code[2 * j + 1])
+  }
+  return word
+}
+
+const decodeTriplet = (encoded: string) => {
+  let word = ''
+  // bc of the 0x at beginning
+  // words are at 16—20, 22—26, and 28—32
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 5; j++) {
+      const offset = 2 * (16 + 6 * i + j)
+      const code = encoded[offset] + encoded[offset + 1]
+      if (code == '00') word += ' '
+      else word = word + hexToChar(code)
+    }
+    if (i < 2) word += ' '
   }
   return word
 }
@@ -96,5 +111,6 @@ export {
   generateRandomBytes32,
   randomToEncodedWord,
   randomWord,
-  encodeTriplet
+  encodeTriplet,
+  decodeTriplet
 }

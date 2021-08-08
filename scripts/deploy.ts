@@ -32,6 +32,13 @@ async function main() {
   const Vault = await VaultFactory.deploy(Babel.address, Words.address)
   await Vault.deployed()
 
+  const ThreeFactory = await ethers.getContractFactory('Three')
+  const Three = await ThreeFactory.deploy(Words.address, Babel.address)
+  await Three.deployed()
+
+  let transaction = await Babel.whitelistAddress(Vault.address)
+  await transaction.wait()
+
   const events = Object.values({
     ...WordsInterface.events,
     ...GeneratorInterface.events,
@@ -44,7 +51,8 @@ async function main() {
     RANDOM_ADDRESS: Bytes32Source.address,
     BABEL_ADDRESS: Babel.address,
     WORDS_ADDRESS: Words.address,
-    VAULT_ADDRESS: Vault.address
+    VAULT_ADDRESS: Vault.address,
+    THREE_ADDRESS: Three.address
   }
 
   const appendFile = async (path: fs.PathLike, content: string) =>

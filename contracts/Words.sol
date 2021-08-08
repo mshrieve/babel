@@ -8,11 +8,10 @@ import '@chainlink/contracts/src/v0.8/VRFConsumerBase.sol';
 import './Libraries/ByteArray.sol';
 import './Generator.sol';
 import './Babel.sol';
-import './Interfaces/IWords.sol';
 import './Interfaces/IBytes32Requester.sol';
 import './Interfaces/IBytes32Source.sol';
 
-contract Words is IBytes32Requester, IWords, ERC721Enumerable, Ownable {
+contract Words is IBytes32Requester, ERC721Enumerable, Ownable {
     Generator immutable generator;
     IBytes32Source immutable bytes32Source;
     Babel immutable babel;
@@ -34,25 +33,6 @@ contract Words is IBytes32Requester, IWords, ERC721Enumerable, Ownable {
         babel = Babel(_babel);
     }
 
-    function requestWord(address _to)
-        external
-        override
-        onlyOwner
-        returns (bytes32 requestId)
-    {
-        // must not have a pending request
-        require(
-            !pendingRequest[msg.sender],
-            'Words: msg.sender has a pending request'
-        );
-        // transfer 1 babel coin
-        babel.transferFrom(msg.sender, address(this), 1 ether);
-        requestId = bytes32Source.requestRandomBytes32(address(this));
-        requestToSender[requestId] = _to;
-        pendingRequest[_to] = true;
-        emit WordRequest(_to, requestId);
-    }
-
     function tokenURI(uint256 tokenId)
         public
         pure
@@ -61,6 +41,26 @@ contract Words is IBytes32Requester, IWords, ERC721Enumerable, Ownable {
     {
         return new string(tokenId);
     }
+
+    function requestWord() external returns (bool) {
+        bytes32 requestId = bytes32Source.requestRandomBytes32(address(this));
+        requestToSender[requestId] = msg.sender;
+        // transfer 1 babel coin
+        babel.transferFrom(msg.sender, address(this), 1 ether);
+        emit WordRequest(msg.sender, requestId);
+        return true;
+    }
+
+    // function onTokenTransfer(
+    //     address from,
+    //     uint256 amount,
+    //     bytes calldata
+    // ) external override returns (bool success) {
+    //     require(msg.sender == address(babel));
+    //     // data consists of the word to redeem
+    //     require(amount == 1 ether);
+    //     return queueRequest(from);
+    // }
 
     function fulfillRequest(bytes32 _requestId, bytes32 _randomBytes32)
         external

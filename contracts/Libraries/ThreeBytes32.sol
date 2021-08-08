@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity ^0.8.0;
+import 'hardhat/console.sol';
 
 library ThreeBytes32 {
     function writeWord(
@@ -31,5 +32,23 @@ library ThreeBytes32 {
 
             result := mload(result_)
         }
+    }
+
+    function checkForMatch(bytes32 _state, bytes32 _word)
+        internal
+        pure
+        returns (bool result)
+    {
+        // bytes5 takes the _first_ 5 bytes of the bytes32
+        // 27 * 8 = 216
+        bytes5 word = bytes5(_word << 216);
+        // 32 - 17 = 15
+        // 15 * 8 = 120
+        if (bytes5(_state << 120) == word) return true;
+        // 21 * 8 = 168
+        if (bytes5(_state << 168) == word) return true;
+        // 27 * 8 = 216
+        if (bytes5(_state << 216) == word) return true;
+        return false;
     }
 }
