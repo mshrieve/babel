@@ -18,11 +18,11 @@ import './Libraries/Math.sol';
 contract Bank {
     Babel immutable babel;
 
-    uint256 internal blockLastUpdated;
-    uint256 internal weight;
-    uint256 internal alpha = 152003093445049984; // -log_2(90%)
-    uint256 internal gamma = 1000000000000000; // .0001
-    uint256 internal floor = 100000000000000; // .001
+    uint256 public blockLastUpdated;
+    uint256 public weight;
+    uint256 public alpha = 152003093445049984; // -log_2(90%)
+    uint256 public gamma = 1000000000000000; // .0001
+    uint256 public floor = 100000000000000; // .001
 
     event BabelMinted(address to, uint256 amount);
 
@@ -51,7 +51,8 @@ contract Bank {
         weight += amount;
 
         // check for eth transfer
-        uint256 surplus = price - msg.value;
+        require(msg.value >= price, 'Bank: not enough eth sent');
+        uint256 surplus = msg.value - price;
         babel.mint(msg.sender, amount);
         payable(msg.sender).transfer(surplus);
     }
