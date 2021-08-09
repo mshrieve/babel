@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity ^0.8.0;
+
+import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
 import './Babel.sol';
 import './Words.sol';
-import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
 
 // babel
 // words
