@@ -6,14 +6,14 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@chainlink/contracts/src/v0.8/VRFConsumerBase.sol';
 import './Libraries/ByteArray.sol';
-import './Generator.sol';
+import './Rotor.sol';
 import './Babel.sol';
-import './Interfaces/IBytes32Requester.sol';
-import './Interfaces/IBytes32Source.sol';
+import './Interfaces/IBytesRequester.sol';
+import './Interfaces/IBytesSource.sol';
 
-contract Words is IBytes32Requester, ERC721Enumerable, Ownable {
-    Generator immutable generator;
-    IBytes32Source immutable bytes32Source;
+contract Words is IBytesRequester, ERC721Enumerable, Ownable {
+    Rotor immutable rotor;
+    IBytesSource immutable bytesSource;
     Babel immutable babel;
 
     mapping(bytes32 => address) internal requestToSender;
@@ -24,12 +24,12 @@ contract Words is IBytes32Requester, ERC721Enumerable, Ownable {
     event WordRequest(address indexed to, bytes32 indexed requestId);
 
     constructor(
-        address _generator,
-        address _random,
+        address,
+        address _bytes,
         address _babel
     ) ERC721('Babel Words', 'BWRD') Ownable() {
-        bytes32Source = IBytes32Source(_random);
-        generator = Generator(_generator);
+        bytesSource = IBytesSource(_bytes);
+        rotor = new Rotor();
         babel = Babel(_babel);
     }
 
@@ -43,7 +43,7 @@ contract Words is IBytes32Requester, ERC721Enumerable, Ownable {
     }
 
     function requestWord() external returns (bool) {
-        bytes32 requestId = bytes32Source.requestRandomBytes32(address(this));
+        bytes32 requestId = bytesSource.requestRandomBytes32(address(this));
         requestToSender[requestId] = msg.sender;
         // transfer 1 babel coin
         babel.transferFrom(msg.sender, address(this), 1 ether);
@@ -51,24 +51,13 @@ contract Words is IBytes32Requester, ERC721Enumerable, Ownable {
         return true;
     }
 
-    // function onTokenTransfer(
-    //     address from,
-    //     uint256 amount,
-    //     bytes calldata
-    // ) external override returns (bool success) {
-    //     require(msg.sender == address(babel));
-    //     // data consists of the word to redeem
-    //     require(amount == 1 ether);
-    //     return queueRequest(from);
-    // }
-
     function fulfillRequest(bytes32 _requestId, bytes32 _randomBytes32)
         external
         override
     {
-        require(msg.sender == address(bytes32Source));
+        require(msg.sender == address(bytesSource));
 
-        bytes32 word = generator.generateWord(_randomBytes32);
+        bytes32 word = rotor.generateWord(_randomBytes32);
         address to = requestToSender[_requestId];
         uint256 tokenId = uint256(word);
 
@@ -77,5 +66,9 @@ contract Words is IBytes32Requester, ERC721Enumerable, Ownable {
         indexToTokenId[totalSupply()] = tokenId;
 
         _safeMint(to, tokenId);
+    }
+
+    function mintWord(address _to, uint256 _tokenId) external onlyOwner {
+        _safeMint(_to, _tokenId);
     }
 }

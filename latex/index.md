@@ -7,3 +7,9 @@ so for a sequence of bytes {X_1, X_2, ..., X_n},
 = [X_1, X_2, \dots, 0, \dots, X_n]
 
 !(0 Y 0) = 1 !Y 1
+
+lyric is three words
+idiom is two words (?)
+verse is five words
+
+can combine lyric and idiom to create verse

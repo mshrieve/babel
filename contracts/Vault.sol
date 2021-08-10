@@ -39,35 +39,14 @@ contract Vault is IERC721Receiver {
         emit RedeemBabel(msg.sender, unclaimed, claimable);
     }
 
-    function redeemWord(uint256 tokenId) public {
+    function redeemWord(uint256 _tokenId) public {
         require(
-            words.ownerOf(tokenId) == address(this),
+            words.ownerOf(_tokenId) == address(this),
             'Vault: token with tokenId is not in the vault'
         );
         babel.transferFrom(msg.sender, address(this), wordsPerBabel * 10**18);
-        words.safeTransferFrom(address(this), msg.sender, tokenId);
+        words.safeTransferFrom(address(this), msg.sender, _tokenId);
     }
-
-    // function onTokenTransfer(
-    //     address from,
-    //     uint256 amount,
-    //     bytes calldata
-    // ) external override returns (bool success) {
-    //     require(msg.sender == address(babel));
-    //     // data consists of the word to redeem
-    //     uint256 tokenId;
-    //     // tokenId is the fifth word in the calldata
-    //     assembly {
-    //         tokenId := calldataload(0x80)
-    //     }
-    //     require(
-    //         words.ownerOf(tokenId) == address(this),
-    //         'Vault: token with tokenId is not in the vault'
-    //     );
-    //     require(amount == wordsPerBabel * 1 ether);
-    //     words.safeTransferFrom(address(this), from, tokenId);
-    //     return true;
-    // }
 
     function onERC721Received(
         address,

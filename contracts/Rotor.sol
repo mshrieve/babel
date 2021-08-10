@@ -3,10 +3,9 @@
 pragma solidity ^0.8.0;
 
 import './Libraries/ByteArray.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract Generator {
-    constructor() {}
-
+contract Rotor is Ownable {
     mapping(bytes32 => uint8) public lettersUnavailableAfterPrefix;
     mapping(bytes32 => bool) public wordUnavailable;
     mapping(address => bytes32) public words;
@@ -14,7 +13,9 @@ contract Generator {
 
     uint256 public allocated;
 
-    function generateWord(bytes32 random) public returns (bytes32) {
+    constructor() Ownable() {}
+
+    function generateWord(bytes32 random) external onlyOwner returns (bytes32) {
         bytes32 word = ByteArray.convertRandomToWord(random);
         require(wordsAvailable > 0);
         if (isWordAvailable(word)) {

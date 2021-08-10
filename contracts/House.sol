@@ -116,8 +116,11 @@ contract House is IERC721Receiver {
         uint256 _tokenId,
         bytes memory _data
     ) external override returns (bytes4) {
-        require(_operator == address(words) || _operator == _from);
-        require(words.ownerOf(_tokenId) == _from);
+        require(msg.sender == address(words), 'House: can only accept Words');
+        require(
+            _operator == address(this) || _operator == _from,
+            'House: operator is invalid'
+        );
         uint256 reserve;
         assembly {
             reserve := mload(add(_data, 0x20))

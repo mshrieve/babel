@@ -5,7 +5,7 @@ import '@chainlink/contracts/src/v0.8/VRFConsumerBase.sol';
 import './Interfaces/IBytes32Source.sol';
 import './Interfaces/IBytes32Requester.sol';
 
-contract Random is IBytes32Source, VRFConsumerBase {
+contract Bytes is IBytes32Source, VRFConsumerBase {
     // Note, the below values have to be configured correctly for VRF requests to work. You can find the respective values for your network in the VRF Contracts page.
 
     // LINK Token - LINK token address on the corresponding network (Ethereum, Polygon, BSC, etc)

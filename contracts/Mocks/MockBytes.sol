@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import '../Interfaces/IBytes32Requester.sol';
 import '../Interfaces/IBytes32Source.sol';
 
-contract MockRandom is IBytes32Source {
+contract MockBytes is IBytes32Source {
     uint256 private salt;
     mapping(bytes32 => address) public requestIdToCallback;
     event Bytes32Requested(bytes32 indexed requestId, address indexed callback);
