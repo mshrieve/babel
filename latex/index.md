@@ -13,3 +13,7 @@ idiom is two words (?)
 verse is five words
 
 can combine lyric and idiom to create verse
+
+auction for every update ?
+update poem every T blocks, and auction for the right.
+or, one user can PROPOSE updates while the others add to fractional ownership to win the auction.

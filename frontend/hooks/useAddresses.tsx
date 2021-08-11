@@ -4,7 +4,8 @@ const addresses = {
   babelAddress: process.env.NEXT_PUBLIC_BABEL_ADDRESS,
   wordsAddress: process.env.NEXT_PUBLIC_WORDS_ADDRESS,
   vaultAddress: process.env.NEXT_PUBLIC_VAULT_ADDRESS,
-  lyricAddress: process.env.NEXT_PUBLIC_LYRIC_ADDRESS
+  lyricAddress: process.env.NEXT_PUBLIC_LYRIC_ADDRESS,
+  curveAddress: process.env.NEXT_PUBLIC_CURVE_ADDRESS
 }
 
 export const useAddresses = () => {

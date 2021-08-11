@@ -15,7 +15,7 @@ import './Libraries/Math.sol';
 // need a 'floor' price, probably
 // don't need a max but a, and n will determine how quickly the curve goes up or down.
 
-contract Bank {
+contract Curve {
     Babel immutable babel;
 
     uint256 public blockLastUpdated;

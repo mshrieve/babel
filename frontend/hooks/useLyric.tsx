@@ -11,12 +11,12 @@ import { useAddresses } from './useAddresses'
 import { decodeTriplet } from '../util'
 
 export const useLyric = () => {
-  const { provider } = useContext(EthContext)
+  const { signer } = useContext(EthContext)
   const { address } = useWallet()
   const { lyricAddress } = useAddresses()
-  const { approveThree } = useBabel()
+  // const { approveThree } = useBabel()
   const [threeContract, setThreeContract] = useState(
-    new ethers.Contract(lyricAddress, Lyric.abi, provider.getSigner())
+    new ethers.Contract(lyricAddress, Lyric.abi, signer)
   )
   const [threeState, setThreeState] = useState('')
   const [decodedTriplet, setDecodedTriplet] = useState('')
@@ -34,7 +34,7 @@ export const useLyric = () => {
     new ethers.Contract(
       process.env.NEXT_PUBLIC_BABEL_ADDRESS,
       Babel.abi,
-      provider.getSigner()
+      signer
     )
   )
 
@@ -76,7 +76,7 @@ export const useLyric = () => {
   }, [address])
 
   return {
-    approveThree,
+    // approveThree,
     replaceWord,
     threeState,
     decodedTriplet
