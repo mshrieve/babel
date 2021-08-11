@@ -23,11 +23,10 @@ contract Words is IBytesRequester, ERC721Enumerable, Ownable {
 
     event WordRequest(address indexed to, bytes32 indexed requestId);
 
-    constructor(
-        address,
-        address _bytes,
-        address _babel
-    ) ERC721('Babel Words', 'BWRD') Ownable() {
+    constructor(address _bytes, address _babel)
+        ERC721('Babel Words', 'BWRD')
+        Ownable()
+    {
         bytesSource = IBytesSource(_bytes);
         rotor = new Rotor();
         babel = Babel(_babel);

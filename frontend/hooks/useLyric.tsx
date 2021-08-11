@@ -1,22 +1,22 @@
 import { useContext, useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
 import { EthContext } from '../context/eth'
-import { useWallet } from '../hooks/useWallet'
-import { useBabel } from '../hooks/useBabel'
+import { useWallet } from './useWallet'
+import { useBabel } from './useBabel'
 import { BigNumber } from 'bignumber.js'
-import Three from '../../artifacts/contracts/Three.sol/Three.json'
+import Lyric from '../../artifacts/contracts/Lyric.sol/Lyric.json'
 import Words from '../../artifacts/contracts/Words.sol/Words.json'
 import Babel from '../../artifacts/contracts/Babel.sol/Babel.json'
 import { useAddresses } from './useAddresses'
 import { decodeTriplet } from '../util'
 
-export const useThree = () => {
+export const useLyric = () => {
   const { provider } = useContext(EthContext)
   const { address } = useWallet()
-  const { threeAddress } = useAddresses()
+  const { lyricAddress } = useAddresses()
   const { approveThree } = useBabel()
   const [threeContract, setThreeContract] = useState(
-    new ethers.Contract(threeAddress, Three.abi, provider.getSigner())
+    new ethers.Contract(lyricAddress, Lyric.abi, provider.getSigner())
   )
   const [threeState, setThreeState] = useState('')
   const [decodedTriplet, setDecodedTriplet] = useState('')

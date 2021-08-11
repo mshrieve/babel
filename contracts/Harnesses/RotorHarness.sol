@@ -3,12 +3,12 @@
 pragma solidity ^0.8.0;
 
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
-import '../Generator.sol';
+import '../Rotor.sol';
 
-contract GeneratorHarness is Generator {
+contract RotorHarness is Rotor {
     event Word(bytes32 indexed word);
 
-    constructor() Generator() {}
+    constructor() Rotor() {}
 
     function _generateWord(bytes32 random) external returns (bytes32 word) {
         word = generateWord(random);

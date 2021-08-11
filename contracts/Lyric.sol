@@ -16,7 +16,7 @@ import './Libraries/ThreeBytes32.sol';
 // idiom
 // lingo
 
-contract Three is Ownable, ERC721Enumerable {
+contract Lyric is Ownable, ERC721Enumerable {
     Words immutable words;
     Babel immutable babel;
 

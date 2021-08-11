@@ -25,7 +25,7 @@ describe('Words', function () {
     const GeneratorInterface = GeneratorFactory.interface
     await Generator.deployed()
 
-    const Bytes32SourceFactory = await ethers.getContractFactory('MockRandom')
+    const Bytes32SourceFactory = await ethers.getContractFactory('MockBytes')
     Bytes32Source = await Bytes32SourceFactory.deploy()
     const Bytes32SourceInterface = Bytes32SourceFactory.interface
     await Bytes32Source.deployed()

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useThree } from '../hooks/useThree'
+import { useLyric } from '../hooks/useLyric'
 
 const Three = () => {
-  const { threeState, decodedTriplet, replaceWord, approveThree } = useThree()
+  const { threeState, decodedTriplet, replaceWord, approveThree } = useLyric()
 
   const [inputs, setInputs] = useState({
     word: '',

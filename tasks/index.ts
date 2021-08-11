@@ -8,6 +8,13 @@ task('accounts', 'Prints the list of accounts', async (args, hre) => {
   }
 })
 
+task('deployBabel', 'deploys babel').setAction(async (args, { ethers }) => {
+  const BabelFactory = await ethers.getContractFactory('Babel')
+  const Babel = await BabelFactory.deploy()
+
+  console.log(Babel.address)
+})
+
 task('getRandom', 'Looks up deployments').setAction(
   async (args, { ethers }) => {
     const Words = await ethers.getContractFactory('Words')

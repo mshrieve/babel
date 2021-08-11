@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import '../Interfaces/IBytes32Requester.sol';
-import '../Interfaces/IBytes32Source.sol';
+import '../Interfaces/IBytesRequester.sol';
+import '../Interfaces/IBytesSource.sol';
 
-contract MockBytes is IBytes32Source {
+contract MockBytes is IBytesSource {
     uint256 private salt;
     mapping(bytes32 => address) public requestIdToCallback;
-    event Bytes32Requested(bytes32 indexed requestId, address indexed callback);
+    event BytesRequested(bytes32 indexed requestId, address indexed callback);
 
     constructor() {}
 
@@ -23,11 +23,11 @@ contract MockBytes is IBytes32Source {
     {
         requestId = keccak256(abi.encodePacked(block.timestamp, salt));
         requestIdToCallback[requestId] = callback;
-        emit Bytes32Requested(requestId, callback);
+        emit BytesRequested(requestId, callback);
     }
 
     function fulfillRandomBytes32(bytes32 _requestId) external {
-        IBytes32Requester(requestIdToCallback[_requestId]).fulfillRequest(
+        IBytesRequester(requestIdToCallback[_requestId]).fulfillRequest(
             _requestId,
             randomize()
         );

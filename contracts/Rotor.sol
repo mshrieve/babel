@@ -15,7 +15,7 @@ contract Rotor is Ownable {
 
     constructor() Ownable() {}
 
-    function generateWord(bytes32 random) external onlyOwner returns (bytes32) {
+    function generateWord(bytes32 random) public onlyOwner returns (bytes32) {
         bytes32 word = ByteArray.convertRandomToWord(random);
         require(wordsAvailable > 0);
         if (isWordAvailable(word)) {

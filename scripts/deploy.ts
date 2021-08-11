@@ -1,5 +1,5 @@
 import { ethers } from 'hardhat'
-import fs from 'fs'
+import { appendFile, writeFile } from './utils'
 
 async function main() {
   const [owner] = await ethers.getSigners()
@@ -54,22 +54,6 @@ async function main() {
     VAULT_ADDRESS: Vault.address,
     THREE_ADDRESS: Three.address
   }
-
-  const appendFile = async (path: fs.PathLike, content: string) =>
-    new Promise((res, rej) =>
-      fs.appendFile(path, content, (err) => {
-        if (err) return rej()
-        return res(true)
-      })
-    )
-
-  const writeFile = async (path: fs.PathLike, content: string) =>
-    new Promise((res, rej) =>
-      fs.writeFile(path, content, (err) => {
-        if (err) return rej()
-        return res(true)
-      })
-    )
 
   try {
     const envVarPath = './frontend/.env.local'

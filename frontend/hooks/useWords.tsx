@@ -22,13 +22,13 @@ export const decodeTokenId = (code: string) => {
 }
 
 export const useWords = () => {
-  const { provider } = useContext(EthContext)
+  const { signer } = useContext(EthContext)
   const { address } = useWallet()
   const [wordsContract, setWordsContract] = useState(
     new ethers.Contract(
       process.env.NEXT_PUBLIC_WORDS_ADDRESS,
       Words.abi,
-      provider.getSigner()
+      signer
     )
   )
   const [requestId, setRequestId] = useState('')

@@ -8,13 +8,12 @@ import Babel from '../../artifacts/contracts/Babel.sol/Babel.json'
 
 const eDecimals = new BigNumber(10).exponentiatedBy(18)
 export const useBabel = () => {
-  const { provider } = useContext(EthContext)
+  const { signer } = useContext(EthContext)
   const { address } = useWallet()
-  const { wordsAddress, vaultAddress, babelAddress, threeAddress } =
-    useAddresses()
+  const { wordsAddress, vaultAddress, babelAddress } = useAddresses()
 
   const [babelContract, setBabelContract] = useState(
-    new ethers.Contract(babelAddress, Babel.abi, provider.getSigner())
+    new ethers.Contract(babelAddress, Babel.abi, signer)
   )
   const [balance, setBalance] = useState('0')
   const [wordsAllowance, setWordsAllowance] = useState('0')
@@ -42,13 +41,13 @@ export const useBabel = () => {
       )
   }, [address])
 
-  const approveThree = useCallback(() => {
-    if (address)
-      babelContract.increaseAllowance(
-        threeAddress,
-        eDecimals.times(1000).toFixed()
-      )
-  }, [address])
+  // const approveThree = useCallback(() => {
+  //   if (address)
+  //     babelContract.increaseAllowance(
+  //       threeAddress,
+  //       eDecimals.times(1000).toFixed()
+  //     )
+  // }, [address])
 
   //   initially set the balance
   useEffect(() => {
@@ -102,7 +101,6 @@ export const useBabel = () => {
     vaultAllowance,
     mintBabel,
     approveWords,
-    approveVault,
-    approveThree
+    approveVault
   }
 }

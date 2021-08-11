@@ -8,27 +8,27 @@ import Words from '../../artifacts/contracts/Words.sol/Words.json'
 import Babel from '../../artifacts/contracts/Babel.sol/Babel.json'
 
 export const useVault = () => {
-  const { provider } = useContext(EthContext)
+  const { signer } = useContext(EthContext)
   const { address } = useWallet()
   const [vaultContract, setVaultContract] = useState(
     new ethers.Contract(
       process.env.NEXT_PUBLIC_VAULT_ADDRESS,
       Vault.abi,
-      provider.getSigner()
+      signer
     )
   )
   const [wordsContract, setWordsContract] = useState(
     new ethers.Contract(
       process.env.NEXT_PUBLIC_WORDS_ADDRESS,
       Words.abi,
-      provider.getSigner()
+      signer
     )
   )
   const [babelContract, setBabelContract] = useState(
     new ethers.Contract(
       process.env.NEXT_PUBLIC_BABEL_ADDRESS,
       Babel.abi,
-      provider.getSigner()
+      signer
     )
   )
 

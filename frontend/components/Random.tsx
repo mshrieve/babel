@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { useRandom } from '../hooks/useRandom'
+import { useBytes } from '../hooks/useBytes'
 
 const Random = () => {
-  const { fulfillRequest } = useRandom()
+  const { fulfillRequest } = useBytes()
   const [inputs, setInputs] = useState({
     requestId: ''
   })
