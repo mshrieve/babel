@@ -3,14 +3,15 @@
 pragma solidity ^0.8.0;
 import 'hardhat/console.sol';
 
-library ThreeBytes32 {
+library LyricLibrary {
     function writeWord(
-        bytes32 _state,
-        bytes32 _word,
+        uint256 _state,
+        uint256 _word,
         uint8 _position
-    ) internal pure returns (bytes32 result) {
+    ) internal pure returns (uint256 result) {
         uint8 stateOffset = 14 + _position * 6 + 1;
         uint8 wordOffset = 27;
+        require(_position < 3, 'Lyric: invalid position');
         assembly {
             // load free pointer
             let result_ := mload(0x40)
@@ -34,7 +35,7 @@ library ThreeBytes32 {
         }
     }
 
-    function checkForMatch(bytes32 _state, bytes32 _word)
+    function checkBytesForMatch(bytes32 _state, bytes32 _word)
         internal
         pure
         returns (bool result)
@@ -49,6 +50,22 @@ library ThreeBytes32 {
         if (bytes5(_state << 168) == word) return true;
         // 27 * 8 = 216
         if (bytes5(_state << 216) == word) return true;
+        return false;
+    }
+
+    function checkIdForMatch(uint256 _state, uint256 _word)
+        internal
+        pure
+        returns (bool result)
+    {
+        // uint40 takes the _last_ 5 bytes of the bytes32
+        // 27 * 8 = 216
+        uint40 word = uint40(_word);
+        if (uint40(_state) == word) return true;
+        // 6 * 8 = 48
+        if (uint40(_state >> 48) == word) return true;
+        // 12 * 8 = 96
+        if (uint40(_state >> 96) == word) return true;
         return false;
     }
 }

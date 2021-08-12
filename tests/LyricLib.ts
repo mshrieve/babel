@@ -9,20 +9,22 @@ import {
   encodeTriplet
 } from '../utils'
 
-describe('ThreeLib', function () {
-  let ThreeLib: Contract
+describe('LyricLib', function () {
+  let LyricLib: Contract
 
   before(async () => {
     const [owner] = await ethers.getSigners()
-    const ThreeLibFactory = await ethers.getContractFactory('ThreeLibHarness')
-    ThreeLib = await ThreeLibFactory.deploy()
-    await ThreeLib.deployed()
+    const LyricLibFactory = await ethers.getContractFactory(
+      'LyricLibraryHarness'
+    )
+    LyricLib = await LyricLibFactory.deploy()
+    await LyricLib.deployed()
   })
 
   it('should replace the word at a position', async function () {
     const word1 = randomWord()
     const zeroBytes = new Array(32).fill(0)
-    let result = await ThreeLib.writeWord(
+    let result = await LyricLib.writeWord(
       ethers.utils.hexZeroPad(zeroBytes, 32),
       word1,
       0
@@ -30,7 +32,7 @@ describe('ThreeLib', function () {
 
     const word2 = randomWord()
 
-    result = await ThreeLib.writeWord(
+    result = await LyricLib.writeWord(
       ethers.utils.hexZeroPad(result, 32),
       word2,
       1
@@ -38,7 +40,7 @@ describe('ThreeLib', function () {
 
     const word3 = randomWord()
 
-    result = await ThreeLib.writeWord(
+    result = await LyricLib.writeWord(
       ethers.utils.hexZeroPad(result, 32),
       word3,
       2
@@ -58,13 +60,13 @@ describe('ThreeLib', function () {
     const zeroBytes = new Array(32).fill(0)
 
     const word1Encoded = encodeWord(word1)
-    let result = await ThreeLib.checkForMatch(
+    let result = await LyricLib.checkIdForMatch(
       ethers.utils.hexZeroPad(zeroBytes, 32),
       word1Encoded
     )
     expect(result).to.be.false
 
-    result = await ThreeLib.checkForMatch(
+    result = await LyricLib.checkIdForMatch(
       ethers.utils.hexZeroPad(word1Encoded, 32),
       word1Encoded
     )
@@ -72,13 +74,14 @@ describe('ThreeLib', function () {
 
     const triplet = encodeTriplet([word1, word2, word3])
 
-    result = await ThreeLib.checkForMatch(triplet, encodeWord(word1))
+    result = await LyricLib.checkIdForMatch(triplet, encodeWord(word1))
+
     expect(result).to.be.true
-    result = await ThreeLib.checkForMatch(triplet, encodeWord(word2))
+    result = await LyricLib.checkIdForMatch(triplet, encodeWord(word2))
     expect(result).to.be.true
-    result = await ThreeLib.checkForMatch(triplet, encodeWord(word3))
+    result = await LyricLib.checkIdForMatch(triplet, encodeWord(word3))
     expect(result).to.be.true
-    result = await ThreeLib.checkForMatch(triplet, encodeWord('xxxxx'))
+    result = await LyricLib.checkIdForMatch(triplet, encodeWord('xxxxx'))
     expect(result).to.be.false
   })
 })

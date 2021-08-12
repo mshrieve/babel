@@ -10,14 +10,18 @@ const eDecimals = new BigNumber(10).exponentiatedBy(18)
 export const useBabel = () => {
   const { signer } = useContext(EthContext)
   const { address } = useWallet()
-  const { wordsAddress, vaultAddress, babelAddress } = useAddresses()
+  const { wordsAddress, vaultAddress, babelAddress, lyricAddress } =
+    useAddresses()
 
   const [babelContract, setBabelContract] = useState(
     new ethers.Contract(babelAddress, Babel.abi, signer)
   )
   const [balance, setBalance] = useState('0')
-  const [wordsAllowance, setWordsAllowance] = useState('0')
-  const [vaultAllowance, setVaultAllowance] = useState('0')
+  const [allowances, setAllowances] = useState({
+    words: '0',
+    vault: '0',
+    lyric: '0'
+  })
 
   //   mint 1000 tokens to signer
   const mintBabel = useCallback(() => {
@@ -41,13 +45,13 @@ export const useBabel = () => {
       )
   }, [address])
 
-  // const approveThree = useCallback(() => {
-  //   if (address)
-  //     babelContract.increaseAllowance(
-  //       threeAddress,
-  //       eDecimals.times(1000).toFixed()
-  //     )
-  // }, [address])
+  const approveLyric = useCallback(() => {
+    if (address)
+      babelContract.increaseAllowance(
+        lyricAddress,
+        eDecimals.times(1000).toFixed()
+      )
+  }, [address])
 
   //   initially set the balance
   useEffect(() => {
@@ -77,17 +81,43 @@ export const useBabel = () => {
     if (!address) return undefined
     const filter = babelContract.filters.Approval(address, null)
     const listener = (owner, spender, value) => {
-      if (spender == vaultAddress) setVaultAllowance(value.toString())
-      if (spender == wordsAddress) setWordsAllowance(value.toString())
+      if (spender == vaultAddress)
+        setAllowances((allowances) => ({
+          ...allowances,
+          vault: value.toString()
+        }))
+      else if (spender == wordsAddress)
+        setAllowances((allowances) => ({
+          ...allowances,
+          words: value.toString()
+        }))
+      else if (spender == lyricAddress)
+        setAllowances((allowances) => ({
+          ...allowances,
+          lyricAddress: value.toString()
+        }))
     }
 
-    babelContract
-      .allowance(address, wordsAddress)
-      .then((value) => setWordsAllowance(value.toString()))
+    babelContract.allowance(address, wordsAddress).then((value) =>
+      setAllowances((allowances) => ({
+        ...allowances,
+        words: value.toString()
+      }))
+    )
 
-    babelContract
-      .allowance(address, vaultAddress)
-      .then((value) => setVaultAllowance(value.toString()))
+    babelContract.allowance(address, vaultAddress).then((value) =>
+      setAllowances((allowances) => ({
+        ...allowances,
+        vault: value.toString()
+      }))
+    )
+
+    babelContract.allowance(address, lyricAddress).then((value) =>
+      setAllowances((allowances) => ({
+        ...allowances,
+        lyric: value.toString()
+      }))
+    )
 
     babelContract.on(filter, listener)
     return () => {
@@ -97,10 +127,10 @@ export const useBabel = () => {
 
   return {
     balance,
-    wordsAllowance,
-    vaultAllowance,
+    allowances,
     mintBabel,
     approveWords,
-    approveVault
+    approveVault,
+    approveLyric
   }
 }

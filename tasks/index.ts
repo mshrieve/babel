@@ -26,23 +26,18 @@ task('getRandom', 'Looks up deployments').setAction(
   }
 )
 
-task('getWord', 'gets a random word').setAction(async (args, { ethers }) => {
-  const WordsFactory = await ethers.getContractFactory('Words')
-  const Words = await WordsFactory.deploy()
-  const WordsInterface = WordsFactory.interface
-  await Words.deployed()
+// task('isBabelWhitelist', 'returns true if contract is on the babel whitelist')
+//   .addParam('contractAddress', "The contract's address")
+//   .addParam('babelAddress', "The babel's address")
+//   .setAction(async (args, { ethers }) => {
+//     const Babel = await (
+//       await ethers.getContractFactory('Babel')
+//     ).attach(args.address)
 
-  // const [signer] = await ethers.getSigners()
-  // const wordsContractWithSigner = wordsContract.connect(signer)
-
-  const random = await Words.getWord()
-  const receipt = await random.wait()
-
-  const logs = receipt.logs.map((x: any) => WordsInterface.parseLog(x))
-  console.log(logs)
-  // const word = await Words.currentWord()
-  // console.log((await Words.allocated()).toString())
-})
+//     Babel
+//     // const word = await Words.currentWord()
+//     // console.log((await Words.allocated()).toString())
+//   })
 
 const hexToChar = (hex: string) => {
   return String.fromCharCode(97 + Number.parseInt(hex, 16))

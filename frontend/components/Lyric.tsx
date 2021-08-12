@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useLyric } from '../hooks/useLyric'
+import { useBabel } from '../hooks/useBabel'
 
-const Three = () => {
-  const { threeState, decodedTriplet, replaceWord, approveThree } = useLyric()
+const Lyric = () => {
+  const { lyricState, decodedLyric, bid } = useLyric()
+  const { allowances, approveLyric } = useBabel()
 
   const [inputs, setInputs] = useState({
     word: '',
-    position: ''
+    position: '',
+    bid: ''
   })
 
   const handleChange = (e) =>
@@ -17,14 +20,14 @@ const Three = () => {
   return (
     <section className="border">
       <h2>three</h2>
-      <span>{threeState}</span>
+      <span>{lyricState}</span>
       <br />
-      <span>{decodedTriplet}</span>
+      <span>{decodedLyric}</span>
       <br />
-      <button onClick={() => replaceWord(inputs.word, inputs.position)}>
+      <button onClick={() => bid(inputs.word, inputs.position, inputs.bid)}>
         replace word
       </button>
-      <button onClick={() => approveThree()}>approve three</button>
+      <button onClick={() => approveLyric()}>approve three</button>
 
       <input
         value={inputs.word}
@@ -40,8 +43,15 @@ const Three = () => {
         id="position"
         name="position"
       />
+      <input
+        value={inputs.bid}
+        onChange={handleChange}
+        type="text"
+        id="bid"
+        name="bid"
+      />
     </section>
   )
 }
 
-export { Three }
+export { Lyric }

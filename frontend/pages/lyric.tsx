@@ -1,4 +1,4 @@
-import { Three } from '../components/Three'
+import { Lyric } from '../components/Lyric'
 
 import { EthProvider } from '../context/eth'
 import { MyWords } from '../components/MyWords'
@@ -6,7 +6,7 @@ import { MyWords } from '../components/MyWords'
 const Main = () => {
   return (
     <EthProvider>
-      <Three />
+      <Lyric />
       <MyWords />
     </EthProvider>
   )
