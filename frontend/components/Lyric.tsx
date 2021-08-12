@@ -19,7 +19,7 @@ const Lyric = () => {
     }))
   return (
     <section className="border">
-      <h2>three</h2>
+      <h2>lyric</h2>
       <span>{lyricState}</span>
       <br />
       <span>{decodedLyric}</span>
@@ -35,6 +35,7 @@ const Lyric = () => {
         type="text"
         id="word"
         name="word"
+        placeholder="word"
       />
       <input
         value={inputs.position}
@@ -42,6 +43,7 @@ const Lyric = () => {
         type="text"
         id="position"
         name="position"
+        placeholder="position"
       />
       <input
         value={inputs.bid}
@@ -49,6 +51,7 @@ const Lyric = () => {
         type="text"
         id="bid"
         name="bid"
+        placeholder="bid"
       />
     </section>
   )

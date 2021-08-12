@@ -3,14 +3,8 @@ import { useBabel } from '../hooks/useBabel'
 
 const Wallet = () => {
   const { address } = useWallet()
-  const {
-    balance,
-    mintBabel,
-    wordsAllowance,
-    vaultAllowance,
-    approveWords,
-    approveVault
-  } = useBabel()
+  const { balance, mintBabel, allowances, approveWords, approveVault } =
+    useBabel()
   return (
     <section className="border">
       <h2>wallet</h2>
@@ -19,9 +13,9 @@ const Wallet = () => {
       <br />
       <span>balance: {balance}</span>
       <br />
-      <span>words allowance: {wordsAllowance}</span>
+      <span>words allowance: {allowances.words}</span>
       <br />
-      <span>vault allowance: {vaultAllowance}</span>
+      <span>vault allowance: {allowances.vault}</span>
       <br />
       <button onClick={mintBabel}>mint babel</button>
       <button onClick={approveWords}>approve words</button>

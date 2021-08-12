@@ -23,15 +23,14 @@ contract Lyric is Ownable, ERC721Enumerable {
 
     // author of poem
     mapping(uint256 => address) public author;
-    // how many times a word has been used
-    mapping(uint256 => uint256) public weight;
-    // last minted lyric
-    uint256 public stateId;
+
+    // most recently minted lyric
+    uint256 public currentLyric;
 
     uint256 public roundStart;
     uint256 public highestBid;
     address public highestBidder;
-    uint256 public winningLyricId;
+    uint256 public proposedLyric;
 
     uint256 constant roundLength = 20;
 
@@ -44,12 +43,19 @@ contract Lyric is Ownable, ERC721Enumerable {
     // if lyric has been minted
     mapping(uint256 => bool) public minted;
 
-    event RoundComplete(
-        address indexed winner,
-        uint256 indexed lyric,
-        uint256 indexed bid
+    event RoundBegin(
+        address indexed bidder,
+        uint256 indexed blockNumber,
+        uint256 bid
     );
-    event LyricMinted(address indexed to, uint256 indexed lyric);
+    event RoundEnd(address indexed winner, uint256 indexed lyric, uint256 bid);
+    event MintLyric(address indexed to, uint256 indexed lyric);
+    event SubmitBid(
+        uint256 indexed roundStart,
+        uint256 highestBid,
+        address indexed highestBidder,
+        uint256 lyricId
+    );
 
     constructor(address _words, address _babel)
         ERC721('babel three words', 'BABEL_THREE')
@@ -70,36 +76,35 @@ contract Lyric is Ownable, ERC721Enumerable {
         return new string(tokenId);
     }
 
-    function mintLyric(
-        address to,
-        uint256 lyricId,
-        uint256 wordId
-    ) internal {
+    function mintLyric(address to, uint256 lyricId) internal {
         // set author
         author[lyricId] = msg.sender;
-        weight[wordId]++;
         //
         minted[lyricId] = true;
         // mint sender nft of the lyric
         _safeMint(to, lyricId);
         // emit event
-        emit LyricMinted(to, lyricId);
+        emit MintLyric(to, lyricId);
     }
 
-    function redeemBable() external {
+    function redeemBabel() external {
         // highest bidder cant redeem until round is complete
         // and their balance is adjusted
         require(highestBidder != msg.sender);
         babel.transfer(msg.sender, babelBalances[msg.sender]);
+        babelBalances[msg.sender] = 0;
     }
 
     function completeRound() public {
-        author[winningLyricId] = highestBidder;
-        emit RoundComplete(highestBidder, winningLyricId, highestBid);
-        _safeMint(highestBidder, winningLyricId);
+        mintLyric(highestBidder, proposedLyric);
+        emit RoundEnd(highestBidder, proposedLyric, highestBid);
+
         // decrease balances of winner
         babelBalances[highestBidder] -= highestBid;
+
+        // reset values
         highestBidder = address(0);
+        currentLyric = proposedLyric;
     }
 
     function bidNewLyric(
@@ -121,6 +126,7 @@ contract Lyric is Ownable, ERC721Enumerable {
             completeRound();
             // first bid of the round is the current block
             roundStart = block.number;
+            emit RoundBegin(msg.sender, roundStart, bid);
             // require first bid is positive
             require(bid > 0);
         }
@@ -135,16 +141,19 @@ contract Lyric is Ownable, ERC721Enumerable {
 
         // check that word is not in current lyric
         require(
-            LyricLibrary.checkIdForMatch(stateId, _wordId) == false,
+            LyricLibrary.checkIdForMatch(currentLyric, _wordId) == false,
             'Three: word already in lyric'
         );
 
-        stateId = LyricLibrary.writeWord(stateId, _wordId, _position);
-        require(minted[stateId] == false, 'Three: lyric already minted'); // check if lyric has already been minted
+        proposedLyric = LyricLibrary.writeWord(
+            currentLyric,
+            _wordId,
+            _position
+        );
+        require(minted[proposedLyric] == false, 'Three: lyric already minted'); // check if lyric has already been minted
 
         highestBidder = msg.sender;
         highestBid = bid;
-        winningLyricId = stateId;
 
         // transfer babel from sender if needed
         if (bid > babelBalances[msg.sender]) {
@@ -153,6 +162,7 @@ contract Lyric is Ownable, ERC721Enumerable {
             babel.transferFrom(msg.sender, address(this), owed);
             babelBalances[msg.sender] += owed;
         }
-        // else do nothing, user has enough in balances
+        // emit newBid
+        emit SubmitBid(roundStart, highestBid, highestBidder, proposedLyric);
     }
 }

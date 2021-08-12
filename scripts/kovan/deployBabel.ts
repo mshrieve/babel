@@ -16,7 +16,7 @@ async function main() {
   try {
     const envVarPath = '.env.addresses'
     // await writeFile(envVarPath, '')
-    const content = `Babel_ADDRESS=${Babel.address}\n`
+    const content = `BABEL_ADDRESS=${Babel.address}\n`
     await appendFile(envVarPath, content)
 
     //file written successfully
