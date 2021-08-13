@@ -1,1 +1,36 @@
 # babel
+
+## contracts
+
+### Babel
+
+babel is the erc20 used as the native currency for almost all interactions
+
+### Bytes
+
+bytes is the chainlink VRFConsumerBase responsible for requesting and receiving vrf requests
+
+### Curve
+
+curve is the bonding curve which sells Babel for ETH.
+
+### House
+
+house allows users to auction individual words, starting at a reserve price of their choosing
+
+### Lyric
+
+lyric is a three-word collaborative poem (lyric), where each iteration is minted as an erc721 to the updater
+proposer participate in short auctions for the right to update the lyric
+
+### Rotor
+
+rotor is the random-word generating algorithm
+
+### Vault
+
+vault is where users can deposit words in exchange for babel, or where users can purchase an available word for a fixed cost
+
+### Words
+
+words mints a random word to the requester
