@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { EthContext } from '../context/eth'
 import { useWallet } from '../hooks/useWallet'
 import Words from '../../artifacts/contracts/Words.sol/Words.json'
+import { useAddresses } from './useAddresses'
 
 const hexToChar = (hex: string) => {
   return String.fromCharCode(Number.parseInt(hex, 16))
@@ -24,13 +25,14 @@ export const decodeTokenId = (code: string) => {
 export const useWords = () => {
   const { signer } = useContext(EthContext)
   const { address } = useWallet()
-  const [wordsContract, setWordsContract] = useState(
-    new ethers.Contract(
-      process.env.NEXT_PUBLIC_WORDS_ADDRESS,
-      Words.abi,
-      signer
-    )
-  )
+  const { wordsAddress } = useAddresses()
+
+  const [wordsContract, setWordsContract] = useState(undefined)
+  useEffect(() => {
+    if (signer)
+      setWordsContract(new ethers.Contract(wordsAddress, Words.abi, signer))
+  }, [signer])
+
   const [requestId, setRequestId] = useState('')
   const [word, setWord] = useState('')
   const [tokenId, setTokenId] = useState('')

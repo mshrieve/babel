@@ -3,11 +3,11 @@ import { EthContext } from '../context/eth'
 
 export const useWallet = () => {
   const { signer } = useContext(EthContext)
-  const [address, setAddress] = useState('')
+  const [address, setAddress] = useState(undefined)
 
   useEffect(() => {
-    setAddress(signer.address)
-  }, [signer.address])
+    if (signer) signer.getAddress().then((address) => setAddress(address))
+  }, [signer])
 
   return {
     address

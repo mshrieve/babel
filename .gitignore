@@ -15,6 +15,7 @@ node_modules
 # don't push the environment vars!
 .env
 .env.copy
+.env.local
 .wallet
 
 .DS*

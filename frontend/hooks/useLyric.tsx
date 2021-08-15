@@ -13,12 +13,16 @@ export const useLyric = () => {
   const { address } = useWallet()
   const { lyricAddress, babelAddress } = useAddresses()
   // const { approveThree } = useBabel()
-  const [lyricContract, setLyricContract] = useState(
-    new ethers.Contract(lyricAddress, Lyric.abi, signer)
-  )
-  const [babelContract, setBabelContract] = useState(
-    new ethers.Contract(babelAddress, Babel.abi, signer)
-  )
+  const [lyricContract, setLyricContract] = useState(undefined)
+  const [babelContract, setBabelContract] = useState(undefined)
+
+  useEffect(() => {
+    if (!signer) return undefined
+
+    setLyricContract(new ethers.Contract(lyricAddress, Lyric.abi, signer))
+    setBabelContract(new ethers.Contract(babelAddress, Babel.abi, signer))
+  }, [signer])
+
   const [lyricState, setLyricState] = useState({
     id: ethers.utils.hexZeroPad('0x0', 32),
     roundStart: ethers.BigNumber.from(0),
@@ -26,8 +30,9 @@ export const useLyric = () => {
     winningLyricId: ethers.BigNumber.from(0)
   })
   const [decodedLyric, setDecodedLyric] = useState('')
+
   useEffect(() => {
-    setDecodedLyric(decodeTriplet(lyricState))
+    setDecodedLyric(decodeTriplet(lyricState.id))
   }, [lyricState])
 
   // const [babelContract, setBabelContract] = useState(
@@ -52,33 +57,13 @@ export const useLyric = () => {
 
   //   listen for transfer
   useEffect(() => {
-    if (!signer) return undefined
+    if (!lyricContract) return undefined
 
-    const filter = lyricContract.filters.LyricMinted()
+    const filter = lyricContract.filters.MintLyric()
     const listener = async (state) => {
       setLyricState(state.toHexString())
     }
-    lyricContract
-      .stateId()
-      .then((state) =>
-        setLyricState(ethers.utils.hexZeroPad(state.toHexString(), 32))
-      )
-
-    lyricContract.on(filter, listener)
-    return () => {
-      lyricContract.off(filter, listener)
-    }
-  }, [address])
-
-  //   listen for transfer
-  useEffect(() => {
-    if (!signer) return undefined
-
-    const filter = babelContract.filters.Transfer()
-    const listener = async (state) => {
-      setLyricState(state.toHexString())
-    }
-    lyricContract.stateId().then((id) =>
+    lyricContract.currentLyric().then((id) =>
       setLyricState((state) => ({
         ...state,
         id: ethers.utils.hexZeroPad(id.toHexString(), 32)
@@ -89,7 +74,28 @@ export const useLyric = () => {
     return () => {
       lyricContract.off(filter, listener)
     }
-  }, [address])
+  }, [lyricContract])
+
+  // //   listen for transfer
+  // useEffect(() => {
+  //   if (!signer) return undefined
+
+  //   const filter = babelContract.filters.Transfer()
+  //   const listener = async (state) => {
+  //     setLyricState(state.toHexString())
+  //   }
+  //   lyricContract.currentLyric().then((id) =>
+  //     setLyricState((state) => ({
+  //       ...state,
+  //       id: ethers.utils.hexZeroPad(id.toHexString(), 32)
+  //     }))
+  //   )
+
+  //   lyricContract.on(filter, listener)
+  //   return () => {
+  //     lyricContract.off(filter, listener)
+  //   }
+  // }, [address])
 
   return {
     // approveThree,

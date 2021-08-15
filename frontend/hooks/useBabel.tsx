@@ -12,10 +12,12 @@ export const useBabel = () => {
   const { address } = useWallet()
   const { wordsAddress, vaultAddress, babelAddress, lyricAddress } =
     useAddresses()
+  const [babelContract, setBabelContract] = useState(undefined)
+  useEffect(() => {
+    if (!signer) return undefined
+    setBabelContract(new ethers.Contract(babelAddress, Babel.abi, signer))
+  }, [signer])
 
-  const [babelContract, setBabelContract] = useState(
-    new ethers.Contract(babelAddress, Babel.abi, signer)
-  )
   const [balance, setBalance] = useState('0')
   const [allowances, setAllowances] = useState({
     words: '0',
@@ -25,45 +27,46 @@ export const useBabel = () => {
 
   //   mint 1000 tokens to signer
   const mintBabel = useCallback(() => {
-    if (address) babelContract.mint(address, eDecimals.times(1000).toFixed())
-  }, [address])
+    if (!signer) return undefined
+    babelContract.mint(address, eDecimals.times(1000).toFixed())
+  }, [signer])
 
   //   increase allowance by 1000
   const approveWords = useCallback(() => {
-    if (address)
+    if (!babelContract || !address)
       babelContract.increaseAllowance(
         wordsAddress,
         eDecimals.times(1000).toFixed()
       )
-  }, [address])
+  }, [babelContract, address])
 
   const approveVault = useCallback(() => {
-    if (address)
+    if (!babelContract || !address)
       babelContract.increaseAllowance(
         vaultAddress,
         eDecimals.times(1000).toFixed()
       )
-  }, [address])
+  }, [babelContract, address])
 
   const approveLyric = useCallback(() => {
-    if (address)
+    if (!babelContract || !address)
       babelContract.increaseAllowance(
         lyricAddress,
         eDecimals.times(1000).toFixed()
       )
-  }, [address])
+  }, [babelContract, address])
 
   //   initially set the balance
   useEffect(() => {
-    if (address)
-      babelContract
-        .balanceOf(address)
-        .then((balance) => setBalance(balance.toString()))
-  }, [address])
+    if (!babelContract) return undefined
+    babelContract
+      .balanceOf(address)
+      .then((balance) => setBalance(balance.toString()))
+  }, [address, babelContract])
 
   //   listen for transfer
   useEffect(() => {
-    if (!address) return undefined
+    if (!babelContract) return undefined
     const filter = babelContract.filters.Transfer(null, null)
     const listener = (from, to, amount) =>
       babelContract
@@ -74,11 +77,12 @@ export const useBabel = () => {
     return () => {
       babelContract.off(filter, listener)
     }
-  }, [address])
+  }, [babelContract, address])
 
   //  listen for approvals
   useEffect(() => {
-    if (!address) return undefined
+    if (!babelContract || !address) return undefined
+    console.log(address)
     const filter = babelContract.filters.Approval(address, null)
     const listener = (owner, spender, value) => {
       if (spender == vaultAddress)
@@ -123,7 +127,7 @@ export const useBabel = () => {
     return () => {
       babelContract.off(filter, listener)
     }
-  }, [address])
+  }, [babelContract, address])
 
   return {
     balance,

@@ -20,7 +20,7 @@ const Lyric = () => {
   return (
     <section className="border">
       <h2>lyric</h2>
-      <span>{lyricState}</span>
+      <span>{lyricState.id}</span>
       <br />
       <span>{decodedLyric}</span>
       <br />

@@ -6,31 +6,24 @@ import { BigNumber } from 'bignumber.js'
 import Vault from '../../artifacts/contracts/Vault.sol/Vault.json'
 import Words from '../../artifacts/contracts/Words.sol/Words.json'
 import Babel from '../../artifacts/contracts/Babel.sol/Babel.json'
+import { useAddresses } from './useAddresses'
 
 export const useVault = () => {
   const { signer } = useContext(EthContext)
   const { address } = useWallet()
-  const [vaultContract, setVaultContract] = useState(
-    new ethers.Contract(
-      process.env.NEXT_PUBLIC_VAULT_ADDRESS,
-      Vault.abi,
-      signer
-    )
-  )
-  const [wordsContract, setWordsContract] = useState(
-    new ethers.Contract(
-      process.env.NEXT_PUBLIC_WORDS_ADDRESS,
-      Words.abi,
-      signer
-    )
-  )
-  const [babelContract, setBabelContract] = useState(
-    new ethers.Contract(
-      process.env.NEXT_PUBLIC_BABEL_ADDRESS,
-      Babel.abi,
-      signer
-    )
-  )
+  const { vaultAddress, wordsAddress, babelAddress } = useAddresses()
+
+  const [vaultContract, setVaultContract] = useState(undefined)
+  const [wordsContract, setWordsContract] = useState(undefined)
+  const [babelContract, setBabelContract] = useState(undefined)
+
+  useEffect(() => {
+    if (!signer) return undefined
+
+    setVaultContract(new ethers.Contract(vaultAddress, Vault.abi, signer))
+    setWordsContract(new ethers.Contract(wordsAddress, Words.abi, signer))
+    setBabelContract(new ethers.Contract(babelAddress, Babel.abi, signer))
+  }, [signer])
 
   const [unclaimedWords, setUnclaimedWords] = useState('0')
 
