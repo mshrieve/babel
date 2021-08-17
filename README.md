@@ -4,7 +4,7 @@ Babel is an interactive, collaborative `poetry' project using ERC20 and ERC721.
 
 Feel free to get in touch with any questions/comments: mike@loset.info
 
-video demo for HackFS: [https://youtu.be/J_b80NZ3Qek]
+[video demo](https://youtu.be/J_b80NZ3Qek) for HackFS
 
 ## Setup
 
