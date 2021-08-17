@@ -7,10 +7,45 @@ body {
   font-size: 0.9rem;
 }
 
+nav {
+  text-align: right;
+}
+
+.navItem {
+  padding-left: 1rem;
+}
+
 .border {
   border: 1px solid black;
   padding: 1rem;
-  margin: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.displayLyric {
+  margin: auto;
+  width: 16rem;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 2rem;
+  justify-self: flex-end;
+  font-family: monospace;
+}
+
+.centerColumn {
+  position: absolute;
+  bottom: 40vh;
+  /* top: 50%; */
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  /* align-items: center; */
+
+  /* background-color: blue; */
+}
+
+.word {
+  padding: 1.5rem;
 }
 
 h2 {

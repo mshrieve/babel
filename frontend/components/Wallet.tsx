@@ -1,9 +1,9 @@
-import { useWallet } from '../hooks/useWallet'
+import { useEth } from '../context/eth'
 import { useBabel } from '../hooks/useBabel'
 
 const Wallet = () => {
-  const { address } = useWallet()
-  const { balance, mintBabel, allowances, approveWords, approveVault } =
+  const { address } = useEth()
+  const { balance, mintBabel, allowances, approveWords, approveLyric } =
     useBabel()
   return (
     <section className="border">
@@ -15,11 +15,10 @@ const Wallet = () => {
       <br />
       <span>words allowance: {allowances.words}</span>
       <br />
-      <span>vault allowance: {allowances.vault}</span>
-      <br />
       <button onClick={mintBabel}>mint babel</button>
       <button onClick={approveWords}>approve words</button>
-      <button onClick={approveVault}>approve vault</button>
+      <button onClick={approveLyric}>approve lyric</button>
+      {/* <button onClick={approveVault}>approve vault</button> */}
     </section>
   )
 }

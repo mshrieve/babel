@@ -1,7 +1,6 @@
 import { useContext, useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
 import { EthContext } from '../context/eth'
-import { useWallet } from '../hooks/useWallet'
 import { BigNumber } from 'bignumber.js'
 import Vault from '../../artifacts/contracts/Vault.sol/Vault.json'
 import Words from '../../artifacts/contracts/Words.sol/Words.json'
@@ -9,10 +8,10 @@ import Babel from '../../artifacts/contracts/Babel.sol/Babel.json'
 import { useAddresses } from './useAddresses'
 
 export const useVault = () => {
-  const { signer } = useContext(EthContext)
-  const { address } = useWallet()
-  const { vaultAddress, wordsAddress, babelAddress } = useAddresses()
+  const { signer, address } = useContext(EthContext)
 
+  const { wordsAddress, babelAddress } = useAddresses()
+  const vaultAddress = '0'
   const [vaultContract, setVaultContract] = useState(undefined)
   const [wordsContract, setWordsContract] = useState(undefined)
   const [babelContract, setBabelContract] = useState(undefined)

@@ -1,14 +1,18 @@
 import { Lyric } from '../components/Lyric'
 
-import { EthProvider } from '../context/eth'
 import { MyWords } from '../components/MyWords'
-
+import { Nav } from '../components/Nav'
+import { LyricAuction } from '../components/LyricAuction'
+import { MyLyrics } from '../components/MyLyrics'
 const Main = () => {
   return (
-    <EthProvider>
+    <>
+      <Nav />
       <Lyric />
+      <LyricAuction />
       <MyWords />
-    </EthProvider>
+      <MyLyrics />
+    </>
   )
 }
 

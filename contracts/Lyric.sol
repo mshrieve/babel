@@ -32,7 +32,7 @@ contract Lyric is Ownable, ERC721Enumerable {
     address public highestBidder;
     uint256 public proposedLyric;
 
-    uint256 constant roundLength = 20;
+    uint256 constant roundLength = 5;
 
     // contract holds babel on behalf of user
     mapping(address => uint256) public babelBalances;
@@ -96,6 +96,7 @@ contract Lyric is Ownable, ERC721Enumerable {
     }
 
     function completeRound() public {
+        // make sure you check the round is over :D
         mintLyric(highestBidder, proposedLyric);
         emit RoundEnd(highestBidder, proposedLyric, highestBid);
 
@@ -105,6 +106,7 @@ contract Lyric is Ownable, ERC721Enumerable {
         // reset values
         highestBidder = address(0);
         currentLyric = proposedLyric;
+        roundStart = 0;
     }
 
     function bidNewLyric(
@@ -123,7 +125,7 @@ contract Lyric is Ownable, ERC721Enumerable {
             // mint the last winner
             // every active round has an active bid,
             // except for the first round
-            completeRound();
+            if (roundStart != 0) completeRound();
             // first bid of the round is the current block
             roundStart = block.number;
             emit RoundBegin(msg.sender, roundStart, bid);

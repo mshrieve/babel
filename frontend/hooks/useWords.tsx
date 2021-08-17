@@ -1,7 +1,6 @@
 import { useContext, useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
-import { EthContext } from '../context/eth'
-import { useWallet } from '../hooks/useWallet'
+import { useEth } from '../context/eth'
 import Words from '../../artifacts/contracts/Words.sol/Words.json'
 import { useAddresses } from './useAddresses'
 
@@ -23,8 +22,7 @@ export const decodeTokenId = (code: string) => {
 }
 
 export const useWords = () => {
-  const { signer } = useContext(EthContext)
-  const { address } = useWallet()
+  const { signer, address } = useEth()
   const { wordsAddress } = useAddresses()
 
   const [wordsContract, setWordsContract] = useState(undefined)
@@ -39,13 +37,14 @@ export const useWords = () => {
   const [usersWords, setUsersWords] = useState([])
 
   const requestWord = useCallback(() => {
-    if (!address) return undefined
+    if (!wordsContract) return undefined
+    console.log('requstWord')
     wordsContract.requestWord()
-  }, [address])
+  }, [wordsContract])
 
   //   listen for request
   useEffect(() => {
-    if (!address) return undefined
+    if (!wordsContract || !address) return undefined
 
     const filter = wordsContract.filters.WordRequest(address, null)
     const listener = (to, requestId) => setRequestId(requestId)
@@ -54,11 +53,11 @@ export const useWords = () => {
     return () => {
       wordsContract.off(filter, listener)
     }
-  }, [address])
+  }, [wordsContract])
 
   //   listen for transfer
   useEffect(() => {
-    if (!address) return undefined
+    if (!wordsContract || !address) return undefined
 
     const filter = wordsContract.filters.Transfer(null, address)
     const listener = (from, to, tokenId) => {
@@ -71,11 +70,11 @@ export const useWords = () => {
     return () => {
       wordsContract.off(filter, listener)
     }
-  }, [address])
+  }, [wordsContract])
 
   //   listen for transfer
   useEffect(() => {
-    if (!address) return undefined
+    if (!wordsContract || !address) return undefined
 
     const filterA = wordsContract.filters.Transfer(null, address)
     const filterB = wordsContract.filters.Transfer(address, null)
@@ -97,7 +96,7 @@ export const useWords = () => {
       wordsContract.off(filterA, listener)
       wordsContract.off(filterB, listener)
     }
-  }, [address])
+  }, [wordsContract])
 
   return {
     wordsContract,

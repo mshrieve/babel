@@ -4,13 +4,16 @@ Babel is an interactive, collaborative `poetry' project using ERC20 and ERC721.
 
 Feel free to get in touch with any questions/comments: mike@loset.info
 
+video demo for HackFS: [https://youtu.be/J_b80NZ3Qek]
+
 ## Setup
 
 Make sure to `npm install` before anything.
 To run the frontend: `npx next frontend`.
 To compile the contracts: `npx hardhat compile`.
-To run scripts: `npx hardhat run --network NETWORK_NAME path_to_script.ts`.
-To run a task: `npx hardhat --network NETWORK_NAME task_name`.
+`export HARDHAT_NETWORK={localhost, rinkeby}` to change where scripts and tasks run.
+To run scripts: `npx hardhat run path_to_script.ts`.
+To run a task: `npx hardhat task_name`.
 
 ## contracts
 

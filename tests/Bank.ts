@@ -1,7 +1,6 @@
 import { ethers } from 'hardhat'
 import { Contract, Signer } from 'ethers'
 import { expect } from 'chai'
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { Interface } from 'ethers/lib/utils'
 import { BigNumber } from 'bignumber.js'
 import { Decimal } from 'decimal.js'

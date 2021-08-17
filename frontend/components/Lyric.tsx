@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useLyric } from '../hooks/useLyric'
 import { useBabel } from '../hooks/useBabel'
+import { DisplayLyric } from './DisplayLyric'
 
 const Lyric = () => {
-  const { lyricState, decodedLyric, bid } = useLyric()
-  const { allowances, approveLyric } = useBabel()
+  const { lyricState, decodedLyric, bid, completeRound } = useLyric()
+  const { balance, allowances, approveLyric } = useBabel()
 
   const [inputs, setInputs] = useState({
     word: '',
@@ -20,39 +21,16 @@ const Lyric = () => {
   return (
     <section className="border">
       <h2>lyric</h2>
-      <span>{lyricState.id}</span>
-      <br />
-      <span>{decodedLyric}</span>
-      <br />
-      <button onClick={() => bid(inputs.word, inputs.position, inputs.bid)}>
-        replace word
-      </button>
-      <button onClick={() => approveLyric()}>approve three</button>
 
-      <input
-        value={inputs.word}
-        onChange={handleChange}
-        type="text"
-        id="word"
-        name="word"
-        placeholder="word"
-      />
-      <input
-        value={inputs.position}
-        onChange={handleChange}
-        type="text"
-        id="position"
-        name="position"
-        placeholder="position"
-      />
-      <input
-        value={inputs.bid}
-        onChange={handleChange}
-        type="text"
-        id="bid"
-        name="bid"
-        placeholder="bid"
-      />
+      <br />
+      {decodedLyric ? <DisplayLyric lyric={decodedLyric} /> : undefined}
+      <br />
+      <br />
+      {/* <button onClick={() => approveLyric()}>approve lyric</button>
+      <span>lyric allowance: {allowances.lyric}</span> */}
+      <span style={{ width: '50%', margin: 'auto', textAlign: 'center' }}>
+        {lyricState.id}
+      </span>
     </section>
   )
 }
