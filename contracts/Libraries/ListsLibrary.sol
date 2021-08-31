@@ -17,4 +17,6 @@ library ListsLibrary {
         uint8 offset = 8 * (27 - _position * 5);
         result = (_list & ~(mask << offset)) | (_word << offset);
     }
+
+    function hasWord(
 }
