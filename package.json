@@ -1,5 +1,6 @@
 {
-  "name": "hardhat-project",
+  "name": "babel",
+  "author": "mike shrieve",
   "scripts": {
     "deploy-words": "hardhat run scripts/deploy-words.ts"
   },
